@@ -29,6 +29,11 @@ public class AuthService {
         UserDetails user=userRepository.findByEmail(request.getEmail()).orElseThrow();
         String token=jwtService.getToken(user);
         
+        User user_e=(User)user;
+        user_e.setLast_login(LocalDateTime.now());
+        user_e.setToken(token);
+        userRepository.save(user_e);
+        
         return AuthResponse.builder().token(token).build();
         
     }
