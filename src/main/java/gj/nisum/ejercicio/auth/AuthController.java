@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,12 +31,14 @@ public class AuthController {
     private String passwordFormato;
 
     @PostMapping("login")
+    @Operation(summary = "Permite la Autenticacion con email y password para acceder al sistema", description = "No requiere seguridad")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
 
     }
 
     @PostMapping("register")
+    @Operation(summary = "Permite dar de alta un nuevo usuario", description = "No requiere seguridad")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) throws Exception {
 
         Pattern patternEmail = Pattern.compile(emailFormato);
@@ -54,6 +57,7 @@ public class AuthController {
 
     @ExceptionHandler()
     public ResponseEntity<Map<String, String>> handleNoSuchElementFoundException(Exception exception) {
+        //System.err.println(exception.toString());
 
         Map<String, String> map = new HashMap<String, String>(1) {
             {
@@ -62,9 +66,9 @@ public class AuthController {
         };
         if (exception.getMessage().contains("not-null"))
             map.replace("mensaje", "Falta el mail, dato obligatorio para la creacion del usuario.");
-        if (exception.getMessage().contains("email"))
+        if (exception.getMessage().contains("formato"))
             map.replace("mensaje", exception.getMessage());
-        if (exception.getMessage().contains("password"))
+        if (exception.getMessage().contains("JSON"))
             map.replace("mensaje", exception.getMessage());
         if (exception.getMessage().contains("JWT"))
             map.replace("mensaje", exception.getMessage());

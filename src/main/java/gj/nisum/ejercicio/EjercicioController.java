@@ -32,30 +32,34 @@ public class EjercicioController {
     // Logger logger = LoggerFactory.getLogger(EjercicioController.class);
 
     @GetMapping("demo")
-    @Operation(summary = "Prueba summary")
+    @Operation(hidden = true)
     public String welcome() {
         return "Bienvenido.";
     }
 
     @GetMapping(value = "usuario/{email_param}")
+    @Operation(summary = "Recupera el Usuario dado su email único")
     public UserDTO buscar_usuario(@PathVariable(value = "email_param") String email_param) {
         UserDTO user_dto = ejUserService.getUser(email_param);
         return user_dto;
     }
 
     @GetMapping(value = "usuario")
+    @Operation(summary = "Recupera todos los usuarios")
     public List<UserDTO> buscar_usuarios() {
         List<UserDTO> users_dto = ejUserService.getAllUsers();
         return users_dto;
     }
 
     @PutMapping(value = "usuario/{email_param}", consumes = "application/json")
+    @Operation(summary = "Modifica el Usuario dado su email único")
     public UserDTO editar_usuario(@PathVariable String email_param, @RequestBody RegisterRequest user_request) {
         UserDTO user_dto = ejUserService.updateUser(email_param, user_request);
         return user_dto;
     }
 
     @DeleteMapping("usuario/{email_param}")
+    @Operation(summary = "Elimina el Usuario dado su email único")
     public ResponseEntity<Map<String,String>> eliminar_usuario( @PathVariable(value="email_param") String email_param)
     {
         ejUserService.delete(email_param);
